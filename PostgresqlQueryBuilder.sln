@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueryBuilder", "QueryBuilder\QueryBuilder.csproj", "{31E9F7D8-0BEB-4C85-B0DA-C1681C8C4B4F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueryBuilder.UnitTest", "QueryBuilder.UnitTest\QueryBuilder.UnitTest.csproj", "{237C94DC-B689-4615-BA69-E831C44A9C2C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{31E9F7D8-0BEB-4C85-B0DA-C1681C8C4B4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31E9F7D8-0BEB-4C85-B0DA-C1681C8C4B4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31E9F7D8-0BEB-4C85-B0DA-C1681C8C4B4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{237C94DC-B689-4615-BA69-E831C44A9C2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{237C94DC-B689-4615-BA69-E831C44A9C2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{237C94DC-B689-4615-BA69-E831C44A9C2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{237C94DC-B689-4615-BA69-E831C44A9C2C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
