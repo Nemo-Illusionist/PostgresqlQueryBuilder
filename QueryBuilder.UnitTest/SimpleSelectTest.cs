@@ -49,7 +49,7 @@ namespace QueryBuilder.UnitTest
         public void SelectDistinct()
         {
             var queryString = _queryBuilder.From<Person>()
-                .SelectDistinct(x => new {name = x.Name}, true)
+                .SelectDistinct(x => new {name = x.Name})
                 .ToQueryString();
             const string queryResult = @"SELEC DISTINCT p.""Name"" AS ""name"" FROM ""Persone"" AS p";
 

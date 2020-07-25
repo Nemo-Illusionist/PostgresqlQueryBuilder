@@ -22,8 +22,7 @@ namespace QueryBuilder.Extension
 
         public static IPostgresqlQueryable<TResult> SelectDistinct<T, TResult>(
             this IPostgresqlQueryable<T> queryable,
-            Expression<Func<T, TResult>> expression,
-            bool isDistinct)
+            Expression<Func<T, TResult>> expression)
         {
             throw new NotImplementedException();
         }
