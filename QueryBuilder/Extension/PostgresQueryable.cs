@@ -13,14 +13,14 @@ namespace QueryBuilder.Extension
             throw new NotImplementedException();
         }
 
-        public static ISelectPostgresqlQueryable<TResult> Select<T, TResult>(
+        public static IPostgresqlQueryable<TResult> Select<T, TResult>(
             this IPostgresqlQueryable<T> queryable,
             Expression<Func<T, TResult>> expression)
         {
             throw new NotImplementedException();
         }
 
-        public static ISelectPostgresqlQueryable<TResult> SelectDistinct<T, TResult>(
+        public static IPostgresqlQueryable<TResult> SelectDistinct<T, TResult>(
             this IPostgresqlQueryable<T> queryable,
             Expression<Func<T, TResult>> expression,
             bool isDistinct)
@@ -28,7 +28,7 @@ namespace QueryBuilder.Extension
             throw new NotImplementedException();
         }
 
-        public static ISelectPostgresqlQueryable<TResult> SelectDistinct<T, TResult, TDistinct>(
+        public static IPostgresqlQueryable<TResult> SelectDistinct<T, TResult, TDistinct>(
             this IPostgresqlQueryable<T> queryable,
             Expression<Func<T, TResult>> expression,
             Expression<Func<TResult, TDistinct>> distinctExpression)
