@@ -22,6 +22,8 @@ namespace QueryBuilder.Select
                     return ParseNewExpression(newExpression);
                 case ParameterExpression parameterExpression:
                     return ParseParameterExpression(parameterExpression);
+                case MemberExpression memberExpression:
+                    return ParseMemberExpression(memberExpression);
                 case UnaryExpression unaryExpression:
                     return ParseUnaryExpression(unaryExpression);
                 default:
@@ -31,7 +33,12 @@ namespace QueryBuilder.Select
 
         private static IEnumerable<SelectElement> ParseUnaryExpression(UnaryExpression unaryExpression)
         {
-            var selects = new[] {((MemberExpression)unaryExpression.Operand).Member.Name};
+            return ParseMemberExpression(unaryExpression.Operand as MemberExpression);
+        }
+
+        private static IEnumerable<SelectElement> ParseMemberExpression(MemberExpression memberExpression)
+        {
+            var selects = new[] {memberExpression.Member.Name};
             return selects.Select(x => new SelectElement(x, x));
         }
 
