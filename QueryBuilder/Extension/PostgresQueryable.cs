@@ -1,5 +1,6 @@
 using System;
 using System.Linq.Expressions;
+using QueryBuilder.Entities;
 
 namespace QueryBuilder.Extension
 {
@@ -9,11 +10,12 @@ namespace QueryBuilder.Extension
             this PostgresqlQueryable<T> queryable,
             Expression<Func<T, object>> expression)
         {
-            return queryable.AddDiff(x =>
+            void Mutate(ref PostgresqlQueryableInfo<T> info)
             {
-                x.SelectExpression = expression;
-                return x;
-            });
+                info.SelectExpression = expression;
+            }
+
+            return queryable.AddMutation(Mutate);
         }
 
         public static PostgresqlQueryable<T> SelectDistinct<T>(
@@ -21,12 +23,13 @@ namespace QueryBuilder.Extension
             Expression<Func<T, object>> expression,
             bool isDistinct)
         {
-            return queryable.AddDiff(x =>
+            void Mutate(ref PostgresqlQueryableInfo<T> info)
             {
-                x.SelectExpression = expression;
-                x.IsDistinct = isDistinct;
-                return x;
-            });
+                info.SelectExpression = expression;
+                info.IsDistinct = isDistinct;
+            }
+
+            return queryable.AddMutation(Mutate);
         }
 
         public static PostgresqlQueryable<T> SelectDistinct<T>(
@@ -34,14 +37,14 @@ namespace QueryBuilder.Extension
             Expression<Func<T, object>> expression,
             Expression<Func<T, object>> distinctExpression)
         {
-            return queryable.AddDiff(x =>
+            void Mutate(ref PostgresqlQueryableInfo<T> info)
             {
-                x.SelectExpression = expression;
-                x.IsDistinct = true;
-                x.DistinctExpression = distinctExpression;
+                info.SelectExpression = expression;
+                info.IsDistinct = true;
+                info.DistinctExpression = distinctExpression;
+            }
 
-                return x;
-            });
+            return queryable.AddMutation(Mutate);
         }
     }
 }

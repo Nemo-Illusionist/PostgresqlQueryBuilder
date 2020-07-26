@@ -4,22 +4,22 @@ using QueryBuilder.Entities;
 
 namespace QueryBuilder
 {
-    public delegate PostgresqlQueryableInfo<T> DiffFunc<T>(PostgresqlQueryableInfo<T> info);
+    public delegate void MutateInfo<T>(ref PostgresqlQueryableInfo<T> info);
 
     public class PostgresqlQueryable<T>
     {
-        public PostgresqlQueryable(DiffFunc<T> diffFunc, PostgresqlQueryable<T> prev = null)
+        public PostgresqlQueryable(MutateInfo<T> mutate, PostgresqlQueryable<T> prev = null)
         {
-            Diff = diffFunc;
+            Mutate = mutate;
             Prev = prev;
         }
 
         private PostgresqlQueryable<T> Prev { get; }
-        private DiffFunc<T> Diff { get; }
+        private MutateInfo<T> Mutate { get; }
 
-        public PostgresqlQueryable<T> AddDiff(DiffFunc<T> diff)
+        public PostgresqlQueryable<T> AddMutation(MutateInfo<T> mutation)
         {
-            return new PostgresqlQueryable<T>(diff, this);
+            return new PostgresqlQueryable<T>(mutation, this);
         }
 
         public string ToQueryString()
@@ -27,21 +27,22 @@ namespace QueryBuilder
             var postgresqlQueryInfo = BuildPostgresqlQueryableInfo();
             var queryInfo = new QueryInfoBuilder().Build(postgresqlQueryInfo);
             var query = new QueryStringBuilder().Build(queryInfo);
+
             return query;
         }
 
         private PostgresqlQueryableInfo<T> BuildPostgresqlQueryableInfo()
         {
-            var diffStack = new Stack<PostgresqlQueryable<T>>();
-            var diff = this;
+            var mutationsStack = new Stack<MutateInfo<T>>();
+            var current = this;
             do
             {
-                diffStack.Push(diff);
-                diff = diff.Prev;
-            } while (diff != null);
+                mutationsStack.Push(current.Mutate);
+                current = current.Prev;
+            } while (current != null);
 
             PostgresqlQueryableInfo<T> info = null;
-            while (diffStack.TryPop(out var currentDiff)) info = currentDiff.Diff(info);
+            while (mutationsStack.TryPop(out var mutate)) mutate(ref info);
 
             return info;
         }

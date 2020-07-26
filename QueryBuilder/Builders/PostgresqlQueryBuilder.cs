@@ -6,7 +6,12 @@ namespace QueryBuilder.Builders
     {
         public PostgresqlQueryable<T> From<T>()
         {
-            return new PostgresqlQueryable<T>(x => new PostgresqlQueryableInfo<T>());
+            static void Mutate(ref PostgresqlQueryableInfo<T> info)
+            {
+                info ??= new PostgresqlQueryableInfo<T>();
+            }
+
+            return new PostgresqlQueryable<T>(Mutate);
         }
     }
 }
