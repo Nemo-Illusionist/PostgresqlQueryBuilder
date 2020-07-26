@@ -2,7 +2,7 @@ using System;
 
 namespace QueryBuilder.Select
 {
-    internal class SelectElement
+    public class SelectElement
     {
         public string TableHint { get; set; }
         

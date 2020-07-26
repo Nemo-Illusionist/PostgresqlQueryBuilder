@@ -6,34 +6,39 @@ namespace QueryBuilder.Extension
 {
     public static class PostgresqlQueryableExtension
     {
-        public static IPostgresqlQueryable<T> Where<T>(
-            this IPostgresqlQueryable<T> queryable,
+        public static PostgresqlQueryable<T> Where<T>(
+            this PostgresqlQueryable<T> queryable,
             Expression<Func<T, bool>> expression)
         {
-            throw new NotImplementedException();
+            queryable.WhereExpressions.Add(expression);
+            return queryable;
         }
 
-        public static ISelectPostgresqlQueryable<TResult> Select<T, TResult>(
-            this IPostgresqlQueryable<T> queryable,
-            Expression<Func<T, TResult>> expression)
+        public static PostgresqlQueryable<T> Select<T>(
+            this PostgresqlQueryable<T> queryable,
+            Expression<Func<T, object>> expression)
         {
-            throw new NotImplementedException();
+            queryable.SelectExpression = expression;
+            return queryable;
         }
 
-        public static ISelectPostgresqlQueryable<TResult> SelectDistinct<T, TResult>(
-            this IPostgresqlQueryable<T> queryable,
-            Expression<Func<T, TResult>> expression,
+        public static PostgresqlQueryable<T> SelectDistinct<T>(
+            this PostgresqlQueryable<T> queryable,
+            Expression<Func<T, object>> expression,
             bool isDistinct)
         {
-            throw new NotImplementedException();
+            queryable.IsDistinct = isDistinct;
+            return Select(queryable, expression);
         }
 
-        public static ISelectPostgresqlQueryable<TResult> SelectDistinct<T, TResult, TDistinct>(
-            this IPostgresqlQueryable<T> queryable,
-            Expression<Func<T, TResult>> expression,
-            Expression<Func<TResult, TDistinct>> distinctExpression)
+        public static PostgresqlQueryable<T> SelectDistinct<T>(
+            this PostgresqlQueryable<T> queryable,
+            Expression<Func<T, object>> expression,
+            Expression<Func<T, object>> distinctExpression)
         {
-            throw new NotImplementedException();
+            queryable.IsDistinct = true;
+            queryable.DistinctSelectExpression = distinctExpression;
+            return Select(queryable, expression);
         }
     }
 }

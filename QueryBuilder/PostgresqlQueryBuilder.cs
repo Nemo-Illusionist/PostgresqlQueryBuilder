@@ -5,9 +5,9 @@ namespace QueryBuilder
 {
     public class PostgresqlQueryBuilder
     {
-        public IPostgresqlQueryable<T> From<T>()
+        public PostgresqlQueryable<T> From<T>()
         {
-            throw new NetworkInformationException();
+            return new PostgresqlQueryable<T>();
         }
     }
 }

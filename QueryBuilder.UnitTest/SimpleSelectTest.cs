@@ -18,7 +18,7 @@ namespace QueryBuilder.UnitTest
         public void FromSelect()
         {
             var queryString = _queryBuilder.From<Person>().ToQueryString();
-            const string queryResult = @"SELEC p.""Id"" AS ""Id"", p.""Name"" AS ""Name"" FROM ""Persone"" AS p";
+            const string queryResult = @"SELECT p.""Id"" AS ""Id"" p.""Name"" AS ""Name"" FROM ""Person"" AS p";
 
             Assert.AreEqual(queryResult, queryString);
         }
@@ -29,7 +29,7 @@ namespace QueryBuilder.UnitTest
             var queryString = _queryBuilder.From<Person>()
                 .Select(x => new {id = x.Id, name = x.Name})
                 .ToQueryString();
-            const string queryResult = @"SELEC p.""Id"" AS ""id"", p.""Name"" AS ""name"" FROM ""Persone"" AS p";
+            const string queryResult = @"SELECT p.""Id"" AS ""id"" p.""Name"" AS ""name"" FROM ""Person"" AS p";
 
             Assert.AreEqual(queryResult, queryString);
         }
@@ -40,7 +40,7 @@ namespace QueryBuilder.UnitTest
             var queryString = _queryBuilder.From<Person>()
                 .Select(x => x.Id)
                 .ToQueryString();
-            const string queryResult = @"SELEC p.""Id"" AS ""Id"" FROM ""Persone"" AS p";
+            const string queryResult = @"SELECT p.""Id"" AS ""Id"" FROM ""Person"" AS p";
 
             Assert.AreEqual(queryResult, queryString);
         }
@@ -51,7 +51,7 @@ namespace QueryBuilder.UnitTest
             var queryString = _queryBuilder.From<Person>()
                 .SelectDistinct(x => new {name = x.Name}, true)
                 .ToQueryString();
-            const string queryResult = @"SELEC DISTINCT p.""Name"" AS ""name"" FROM ""Persone"" AS p";
+            const string queryResult = @"SELECT DISTINCT p.""Name"" AS ""name"" FROM ""Person"" AS p";
 
             Assert.AreEqual(queryResult, queryString);
         }
@@ -60,9 +60,9 @@ namespace QueryBuilder.UnitTest
         public void SelectDistinctOn()
         {
             var queryString = _queryBuilder.From<Person>()
-                .SelectDistinct(x => new {id = x.Id, name = x.Name}, x => x.name)
+                .SelectDistinct(x => new {id = x.Id, name = x.Name}, x => x.Name)
                 .ToQueryString();
-            const string queryResult = @"SELEC DISTINCT ON (p.""Name"") p.""Id"" AS ""Id"", p.""Name"" AS ""Name"" FROM ""Persone"" AS p";
+            const string queryResult = @"SELECT DISTINCT ON (p.""Name"") p.""Id"" AS ""Id"", p.""Name"" AS ""Name"" FROM ""Person"" AS p";
 
             Assert.AreEqual(queryResult, queryString);
         }

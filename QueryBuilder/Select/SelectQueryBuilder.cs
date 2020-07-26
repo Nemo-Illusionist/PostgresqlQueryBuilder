@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
@@ -7,43 +9,50 @@ namespace QueryBuilder.Select
 {
     public class SelectQueryBuilder
     {
-        public string Gen<T, TResult>(Expression<Func<T, TResult>> expression, bool isDistinct = false)
+        public IEnumerable<SelectElement> Gen<T, TResult>(Expression<Func<T, TResult>> expression, bool isDistinct = false)
         {
-            var selects = Pars(expression);
-            return Convert(selects);
+            return Parse(expression);
         }
 
-        private static Span<SelectElement> Pars<T, TResult>(Expression<Func<T, TResult>> expression)
+        private static IEnumerable<SelectElement> Parse<T, TResult>(Expression<Func<T, TResult>> expression)
         {
             switch (expression.Body)
             {
                 case NewExpression newExpression:
-                    return ParsNewExpression(newExpression);
+                    return ParseNewExpression(newExpression);
                 case ParameterExpression parameterExpression:
-                    return ParsParameterExpression(parameterExpression);
+                    return ParseParameterExpression(parameterExpression);
+                case UnaryExpression unaryExpression:
+                    return ParseUnaryExpression(unaryExpression);
                 default:
                     throw new NotImplementedException();
             }
         }
 
-        private static Span<SelectElement> ParsParameterExpression(ParameterExpression expression)
+        private static IEnumerable<SelectElement> ParseUnaryExpression(UnaryExpression unaryExpression)
+        {
+            var selects = new[] {((MemberExpression)unaryExpression.Operand).Member.Name};
+            return selects.Select(x => new SelectElement(x, x));
+        }
+
+        private static IEnumerable<SelectElement> ParseParameterExpression(ParameterExpression expression)
         {
             throw new NotImplementedException();
         }
 
-        private static Span<SelectElement> ParsNewExpression(NewExpression expression)
+        private static IEnumerable<SelectElement> ParseNewExpression(NewExpression expression)
         {
             var count = expression.Arguments.Count;
             var selects = new SelectElement[count];
             for (var i = 0; i < count; i++)
             {
-                selects[i] = ParsNewExpressionArgument(expression.Arguments[i], expression.Members[i]);
+                selects[i] = ParseNewExpressionArgument(expression.Arguments[i], expression.Members[i]);
             }
 
-            return selects.AsSpan();
+            return selects;
         }
 
-        private static SelectElement ParsNewExpressionArgument(Expression arg, MemberInfo member)
+        private static SelectElement ParseNewExpressionArgument(Expression arg, MemberInfo member)
         {
             switch (arg)
             {
@@ -55,18 +64,6 @@ namespace QueryBuilder.Select
                 default:
                     throw new NotImplementedException();
             }
-        }
-
-        private static string Convert(Span<SelectElement> selects)
-        {
-            var builder = new StringBuilder("SELECT ");
-            for (int i = 0; i < selects.Length; i++)
-            {
-                throw new NotImplementedException();
-                // builder.Append(s)
-            }
-
-            return builder.ToString();
         }
     }
 }
