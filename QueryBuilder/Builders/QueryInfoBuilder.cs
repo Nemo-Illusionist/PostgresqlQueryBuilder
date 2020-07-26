@@ -16,7 +16,7 @@ namespace QueryBuilder.Builders
             _columnElementBuilder = new ColumnElementBuilder();
         }
 
-        public QueryInfo Build<T>(PostgresqlQueryable<T> postgresqlQueryable)
+        public QueryInfo Build<T>(PostgresqlQueryableInfo<T> postgresqlQueryableInfo)
         {
             var (tableName, tableAlias) = TableNameAndAlias(typeof(T));
 
@@ -24,9 +24,9 @@ namespace QueryBuilder.Builders
             {
                 TableName = tableName,
                 TableAlias = tableAlias,
-                Selects = Selects(postgresqlQueryable.SelectExpression).ToList(),
-                Distincts = Distincts(postgresqlQueryable.DistinctExpression).ToList(),
-                IsDistinct = postgresqlQueryable.IsDistinct
+                Selects = Selects(postgresqlQueryableInfo.SelectExpression).ToList(),
+                Distincts = Distincts(postgresqlQueryableInfo.DistinctExpression).ToList(),
+                IsDistinct = postgresqlQueryableInfo.IsDistinct
             };
         }
 

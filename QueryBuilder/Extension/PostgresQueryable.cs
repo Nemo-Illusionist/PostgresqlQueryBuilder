@@ -9,8 +9,11 @@ namespace QueryBuilder.Extension
             this PostgresqlQueryable<T> queryable,
             Expression<Func<T, object>> expression)
         {
-            queryable.SelectExpression = expression;
-            return queryable;
+            return queryable.AddDiff(x =>
+            {
+                x.SelectExpression = expression;
+                return x;
+            });
         }
 
         public static PostgresqlQueryable<T> SelectDistinct<T>(
@@ -18,8 +21,12 @@ namespace QueryBuilder.Extension
             Expression<Func<T, object>> expression,
             bool isDistinct)
         {
-            queryable.IsDistinct = isDistinct;
-            return Select(queryable, expression);
+            return queryable.AddDiff(x =>
+            {
+                x.SelectExpression = expression;
+                x.IsDistinct = isDistinct;
+                return x;
+            });
         }
 
         public static PostgresqlQueryable<T> SelectDistinct<T>(
@@ -27,9 +34,14 @@ namespace QueryBuilder.Extension
             Expression<Func<T, object>> expression,
             Expression<Func<T, object>> distinctExpression)
         {
-            queryable.IsDistinct = true;
-            queryable.DistinctExpression = distinctExpression;
-            return Select(queryable, expression);
+            return queryable.AddDiff(x =>
+            {
+                x.SelectExpression = expression;
+                x.IsDistinct = true;
+                x.DistinctExpression = distinctExpression;
+
+                return x;
+            });
         }
     }
 }

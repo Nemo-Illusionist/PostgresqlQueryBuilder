@@ -67,5 +67,17 @@ namespace QueryBuilder.UnitTest
 
             Assert.AreEqual(queryResult, queryString);
         }
+
+        [Test]
+        public void DifferentSelectForOneFrom()
+        {
+            var from = _queryBuilder.From<Person>();
+            var select1 = from
+                .SelectDistinct(x => new {name = x.Name}, true);
+            var select2 = from
+                .SelectDistinct(x => new {id = x.Id, name = x.Name}, x => x.Name);
+
+            Assert.AreNotEqual(select1.ToQueryString(), select2.ToQueryString());
+        }
     }
 }

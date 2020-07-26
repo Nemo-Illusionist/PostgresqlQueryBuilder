@@ -1,30 +1,49 @@
-﻿using System;
-using System.Linq.Expressions;
+﻿using System.Collections.Generic;
 using QueryBuilder.Builders;
+using QueryBuilder.Entities;
 
 namespace QueryBuilder
 {
+    public delegate PostgresqlQueryableInfo<T> DiffFunc<T>(PostgresqlQueryableInfo<T> info);
+
     public class PostgresqlQueryable<T>
     {
-        private readonly QueryInfoBuilder _queryInfoBuilder;
-        private readonly QueryStringBuilder _queryStringBuilder;
-
-        public PostgresqlQueryable()
+        public PostgresqlQueryable(DiffFunc<T> diffFunc, PostgresqlQueryable<T> prev = null)
         {
-            _queryInfoBuilder = new QueryInfoBuilder();
-            _queryStringBuilder = new QueryStringBuilder();
+            Diff = diffFunc;
+            Prev = prev;
         }
 
-        public Expression<Func<T, object>> SelectExpression { get; set; }
-        public Expression<Func<T, object>> DistinctExpression { get; set; }
-        public bool IsDistinct { get; set; }
+        private PostgresqlQueryable<T> Prev { get; }
+        private DiffFunc<T> Diff { get; }
 
+        public PostgresqlQueryable<T> AddDiff(DiffFunc<T> diff)
+        {
+            return new PostgresqlQueryable<T>(diff, this);
+        }
 
         public string ToQueryString()
         {
-            var queryInfo = _queryInfoBuilder.Build(this);
-            var query = _queryStringBuilder.Build(queryInfo);
+            var postgresqlQueryInfo = BuildPostgresqlQueryableInfo();
+            var queryInfo = new QueryInfoBuilder().Build(postgresqlQueryInfo);
+            var query = new QueryStringBuilder().Build(queryInfo);
             return query;
+        }
+
+        private PostgresqlQueryableInfo<T> BuildPostgresqlQueryableInfo()
+        {
+            var diffStack = new Stack<PostgresqlQueryable<T>>();
+            var diff = this;
+            do
+            {
+                diffStack.Push(diff);
+                diff = diff.Prev;
+            } while (diff != null);
+
+            PostgresqlQueryableInfo<T> info = null;
+            while (diffStack.TryPop(out var currentDiff)) info = currentDiff.Diff(info);
+
+            return info;
         }
     }
 }
