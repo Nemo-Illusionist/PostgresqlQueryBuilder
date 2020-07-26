@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using QueryBuilder.Builders;
 using QueryBuilder.Extension;
 using QueryBuilder.UnitTest.Entities;
 

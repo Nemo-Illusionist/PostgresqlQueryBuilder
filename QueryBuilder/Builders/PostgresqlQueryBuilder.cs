@@ -1,7 +1,4 @@
-using System.Net.NetworkInformation;
-using QueryBuilder.Contract;
-
-namespace QueryBuilder
+namespace QueryBuilder.Builders
 {
     public class PostgresqlQueryBuilder
     {
