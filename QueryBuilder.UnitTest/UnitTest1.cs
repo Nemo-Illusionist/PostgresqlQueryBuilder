@@ -19,10 +19,11 @@ namespace QueryBuilder.UnitTest
         public void Test1()
         {
             // _selectQueryBuilder.Pars((TestClass x) => new {id = x.Id, x.Name, count =x.SubIds.Count()}, false);
+            _selectQueryBuilder.Parse((TestClass x) => x, false);
             _selectQueryBuilder.Parse(
                 (TestClass x) => new {id = x.Id, x.Name, count = x.SubIds.Count()},
                 x => new {x.Name});
-            // Array.Empty<int>().AsQueryable().OrderBy().ThenBy()
+            // Array.Empty<int>().AsQueryable().OrderBy().ThenBy().Select()
             Assert.Pass();
         }
 

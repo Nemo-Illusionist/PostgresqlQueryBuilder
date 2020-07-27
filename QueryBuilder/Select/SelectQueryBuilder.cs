@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -15,19 +14,11 @@ namespace QueryBuilder.Select
 
         public Select Parse<T, TResult, TDistinct>(
             Expression<Func<T, TResult>> expression,
-            Expression<Func<TResult, TDistinct>> distinctExpression)
+            Expression<Func<T, TDistinct>> distinctExpression)
         {
             var selects = Parse(expression);
-            var selectsDistinct = Parse(distinctExpression);
-            var selectElements = selects.ToArray()
-                .GroupJoin(selectsDistinct.ToArray(), x => x, x => x,
-                    (s, d) =>
-                    {
-                        s.IsDistinct = d.Any();
-                        return s;
-                    }
-                );
-            return new Select(selectElements.ToList().AsReadOnly());
+            var distinctSelects = Parse(distinctExpression);
+            return new Select(Array.AsReadOnly(selects.ToArray()), Array.AsReadOnly(distinctSelects.ToArray()));
         }
 
         private static Span<SelectElement> Parse<T, TResult>(Expression<Func<T, TResult>> expression)
@@ -83,7 +74,7 @@ namespace QueryBuilder.Select
                     return new SelectElement(memberExpression.Member.Name, member.Name);
                 case MethodCallExpression methodCallExpression:
                     var memberName = ((MemberExpression) methodCallExpression.Arguments[0]).Member.Name;
-                    return new SelectElement(memberName, member.Name) {FuncTemplate = methodCallExpression.Method.Name};
+                    return new SelectElement(memberName, member.Name) {Method = methodCallExpression.Method};
                 default:
                     throw new NotImplementedException();
             }
