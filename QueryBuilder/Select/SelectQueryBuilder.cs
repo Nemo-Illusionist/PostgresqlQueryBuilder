@@ -1,49 +1,81 @@
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 
 namespace QueryBuilder.Select
 {
     public class SelectQueryBuilder
     {
-        public string Gen<T, TResult>(Expression<Func<T, TResult>> expression, bool isDistinct = false)
+        public Select Parse<T, TResult>(Expression<Func<T, TResult>> expression, bool isDistinct)
         {
-            var selects = Pars(expression);
-            return Convert(selects);
+            var selects = Parse(expression);
+            return new Select(Array.AsReadOnly(selects.ToArray()), isDistinct);
         }
 
-        private static Span<SelectElement> Pars<T, TResult>(Expression<Func<T, TResult>> expression)
+        public Select Parse<T, TResult, TDistinct>(
+            Expression<Func<T, TResult>> expression,
+            Expression<Func<TResult, TDistinct>> distinctExpression)
+        {
+            var selects = Parse(expression);
+            var selectsDistinct = Parse(distinctExpression);
+            var selectElements = selects.ToArray()
+                .GroupJoin(selectsDistinct.ToArray(), x => x, x => x,
+                    (s, d) =>
+                    {
+                        s.IsDistinct = d.Any();
+                        return s;
+                    }
+                );
+            return new Select(selectElements.ToList().AsReadOnly());
+        }
+
+        private static Span<SelectElement> Parse<T, TResult>(Expression<Func<T, TResult>> expression)
         {
             switch (expression.Body)
             {
                 case NewExpression newExpression:
-                    return ParsNewExpression(newExpression);
+                    return ParseNewExpression(newExpression);
                 case ParameterExpression parameterExpression:
-                    return ParsParameterExpression(parameterExpression);
+                    return ParseParameterExpression(parameterExpression);
+                case MemberExpression memberExpression:
+                    return ParseMemberExpression(memberExpression);
+                case UnaryExpression unaryExpression:
+                    return ParseUnaryExpression(unaryExpression);
                 default:
                     throw new NotImplementedException();
             }
         }
 
-        private static Span<SelectElement> ParsParameterExpression(ParameterExpression expression)
+        private static Span<SelectElement> ParseUnaryExpression(UnaryExpression unaryExpression)
+        {
+            return ParseMemberExpression(unaryExpression.Operand as MemberExpression);
+        }
+
+        private static Span<SelectElement> ParseMemberExpression(MemberExpression memberExpression)
+        {
+            var memberName = memberExpression.Member.Name;
+            return new[] {new SelectElement(memberName, memberName)};
+        }
+
+        private static Span<SelectElement> ParseParameterExpression(ParameterExpression expression)
         {
             throw new NotImplementedException();
         }
 
-        private static Span<SelectElement> ParsNewExpression(NewExpression expression)
+        private static Span<SelectElement> ParseNewExpression(NewExpression expression)
         {
             var count = expression.Arguments.Count;
             var selects = new SelectElement[count];
             for (var i = 0; i < count; i++)
             {
-                selects[i] = ParsNewExpressionArgument(expression.Arguments[i], expression.Members[i]);
+                selects[i] = ParseNewExpressionArgument(expression.Arguments[i], expression.Members[i]);
             }
 
-            return selects.AsSpan();
+            return selects;
         }
 
-        private static SelectElement ParsNewExpressionArgument(Expression arg, MemberInfo member)
+        private static SelectElement ParseNewExpressionArgument(Expression arg, MemberInfo member)
         {
             switch (arg)
             {
@@ -55,18 +87,6 @@ namespace QueryBuilder.Select
                 default:
                     throw new NotImplementedException();
             }
-        }
-
-        private static string Convert(Span<SelectElement> selects)
-        {
-            var builder = new StringBuilder("SELECT ");
-            for (int i = 0; i < selects.Length; i++)
-            {
-                throw new NotImplementedException();
-                // builder.Append(s)
-            }
-
-            return builder.ToString();
         }
     }
 }

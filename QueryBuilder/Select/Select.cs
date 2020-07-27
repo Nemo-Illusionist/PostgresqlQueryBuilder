@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace QueryBuilder.Select
 {
-    internal class Select
+    public class Select
     {
         public bool IsDistinct { get; }
 

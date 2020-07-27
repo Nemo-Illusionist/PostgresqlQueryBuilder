@@ -4,7 +4,7 @@ using QueryBuilder.UnitTest.Entities;
 
 namespace QueryBuilder.UnitTest
 {
-    public class SelectTest
+    public class SimpleSelectTest
     {
         private PostgresqlQueryBuilder _queryBuilder;
 
