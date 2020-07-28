@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueryBuilder", "QueryBuilde
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueryBuilder.UnitTest", "QueryBuilder.UnitTest\QueryBuilder.UnitTest.csproj", "{237C94DC-B689-4615-BA69-E831C44A9C2C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueryBuilder.DanilovSoft.MicroORM", "QueryBuilder.DanilovSoft.MicroORM\QueryBuilder.DanilovSoft.MicroORM.csproj", "{61A0318C-1B01-43F9-862D-295B8CD7047B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{237C94DC-B689-4615-BA69-E831C44A9C2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{237C94DC-B689-4615-BA69-E831C44A9C2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{237C94DC-B689-4615-BA69-E831C44A9C2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61A0318C-1B01-43F9-862D-295B8CD7047B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61A0318C-1B01-43F9-862D-295B8CD7047B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61A0318C-1B01-43F9-862D-295B8CD7047B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61A0318C-1B01-43F9-862D-295B8CD7047B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
