@@ -7,13 +7,12 @@ namespace QueryBuilder.UnitTest
 {
     public class SimpleSelectTest
     {
-        private PostgresqlQueryBuilder _queryBuilder;
+        private PgQueryBuilder _queryBuilder;
 
         [SetUp]
         public void Setup()
         {
-            _queryBuilder = new PostgresqlQueryBuilder();
-            _queryBuilder.From<Person>().Select(x => x.Id).Where(x => x == Guid.NewGuid()).ToQueryString();
+            _queryBuilder = new PgQueryBuilder();
         }
 
         [Test]
@@ -56,6 +55,17 @@ namespace QueryBuilder.UnitTest
             const string queryResult = @"SELEC DISTINCT p.""Name"" AS ""name"" FROM ""Persone"" AS p";
 
             Assert.AreEqual(queryResult, queryString);
+        }        
+        
+        [Test]
+        public void SelectAllFieldsDistinct()
+        {
+            var queryString = _queryBuilder.From<Person>()
+                .SelectDistinct()
+                .ToQueryString();
+            const string queryResult = @"SELEC DISTINCT p.""Id"" AS ""Id"", p.""Name"" AS ""Name"" FROM ""Persone"" AS p";
+
+            Assert.AreEqual(queryResult, queryString);
         }
 
         [Test]
@@ -63,6 +73,18 @@ namespace QueryBuilder.UnitTest
         {
             var queryString = _queryBuilder.From<Person>()
                 .SelectDistinctOn(x => new {id = x.Id, name = x.Name}, x => x.Name)
+                .ToQueryString();
+            const string queryResult =
+                @"SELEC DISTINCT ON (p.""Name"") p.""Id"" AS ""Id"", p.""Name"" AS ""Name"" FROM ""Persone"" AS p";
+
+            Assert.AreEqual(queryResult, queryString);
+        }
+
+        [Test]
+        public void SelectAllFieldsDistinctOn()
+        {
+            var queryString = _queryBuilder.From<Person>()
+                .SelectDistinctOn(x => x.Name)
                 .ToQueryString();
             const string queryResult =
                 @"SELEC DISTINCT ON (p.""Name"") p.""Id"" AS ""Id"", p.""Name"" AS ""Name"" FROM ""Persone"" AS p";

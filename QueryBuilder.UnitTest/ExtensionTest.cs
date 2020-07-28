@@ -6,12 +6,12 @@ namespace QueryBuilder.UnitTest
 {
     public class ExtensionTest
     {
-        private PostgresqlQueryBuilder _queryBuilder;
+        private PgQueryBuilder _queryBuilder;
 
         [SetUp]
         public void Setup()
         {
-            _queryBuilder = new PostgresqlQueryBuilder();
+            _queryBuilder = new PgQueryBuilder();
         }
 
         [Test]

@@ -21,6 +21,7 @@ namespace QueryBuilder.Select
         {
             Elements = elements ?? throw new ArgumentNullException(nameof(elements));
             DistinctElements = distinctElements;
+            IsDistinct = false;
         }
     }
 }

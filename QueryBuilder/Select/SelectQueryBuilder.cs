@@ -6,22 +6,20 @@ namespace QueryBuilder.Select
 {
     public class SelectQueryBuilder
     {
-        public Select Parse<T, TResult>(Expression<Func<T, TResult>> expression, bool isDistinct)
+        public Select Parse(LambdaExpression expression, bool isDistinct)
         {
             var selects = Parse(expression);
             return new Select(Array.AsReadOnly(selects.ToArray()), isDistinct);
         }
 
-        public Select Parse<T, TResult, TDistinct>(
-            Expression<Func<T, TResult>> expression,
-            Expression<Func<T, TDistinct>> distinctExpression)
+        public Select Parse(LambdaExpression expression, LambdaExpression distinctExpression)
         {
             var selects = Parse(expression);
             var distinctSelects = Parse(distinctExpression);
             return new Select(Array.AsReadOnly(selects.ToArray()), Array.AsReadOnly(distinctSelects.ToArray()));
         }
 
-        private static Span<SelectElement> Parse<T, TResult>(Expression<Func<T, TResult>> expression)
+        private static Span<SelectElement> Parse(LambdaExpression expression)
         {
             switch (expression.Body)
             {
@@ -46,7 +44,7 @@ namespace QueryBuilder.Select
         private static Span<SelectElement> ParseMemberExpression(MemberExpression memberExpression)
         {
             var memberName = memberExpression.Member.Name;
-            return new[] {new SelectElement(memberName, memberName)};
+            return new[] {new SelectElement(memberName, memberName, memberExpression.Type)};
         }
 
         private static Span<SelectElement> ParseParameterExpression(ParameterExpression expression)
@@ -71,10 +69,12 @@ namespace QueryBuilder.Select
             switch (arg)
             {
                 case MemberExpression memberExpression:
-                    return new SelectElement(memberExpression.Member.Name, member.Name);
+                    return new SelectElement(memberExpression.Member.Name, member.Name, memberExpression.Type);
                 case MethodCallExpression methodCallExpression:
-                    var memberName = ((MemberExpression) methodCallExpression.Arguments[0]).Member.Name;
-                    return new SelectElement(memberName, member.Name) {Method = methodCallExpression.Method};
+                    var memExpression = (MemberExpression) methodCallExpression.Arguments[0];
+                    var memberName = memExpression.Member.Name;
+                    return new SelectElement(memberName, member.Name, memExpression.Type)
+                        {Method = methodCallExpression.Method};
                 default:
                     throw new NotImplementedException();
             }
