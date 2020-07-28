@@ -23,7 +23,7 @@ namespace QueryBuilder.UnitTest
             // Expression<Func<TestClass, TestClass>> expression = x => x;
             // _selectQueryBuilder.Parse(expression, false);
             Expression<Func<TestClass, object>> expression = x => new {id = x.Id, x.Name, count = x.SubIds.Count()};
-            Expression<Func<TestClass, object>> e1 = x => new {x.Name};
+            Expression<Func<TestClass, object>> e1 = x => new {x.Id, x.Name};
             _selectQueryBuilder.Parse(expression, e1);
             // Array.Empty<int>().AsQueryable().OrderBy(x=>x).ThenBy(x=>x).Select(x=>x+2)
             Assert.Pass();
