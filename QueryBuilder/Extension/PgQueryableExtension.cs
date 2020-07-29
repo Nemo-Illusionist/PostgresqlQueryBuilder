@@ -49,7 +49,7 @@ namespace QueryBuilder.Extension
 
         public static string ToQueryString<T>(this IPgQueryable<T> queryable)
         {
-            throw new NotImplementedException();
+            return queryable.Provider.Execute(queryable.Node);
         }
     }
 }

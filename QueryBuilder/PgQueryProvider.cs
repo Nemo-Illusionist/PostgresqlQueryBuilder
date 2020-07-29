@@ -8,5 +8,10 @@ namespace QueryBuilder
         {
             return new PgQueryable<T>(node, this);
         }
+
+        public string Execute(PgQueryNode node)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
