@@ -1,4 +1,3 @@
-using System;
 using NUnit.Framework;
 using QueryBuilder.Extension;
 using QueryBuilder.UnitTest.Entities;
