@@ -24,7 +24,10 @@ namespace QueryBuilder.Extension
             this IPgQueryable<T> queryable,
             Expression<Func<T, TResult>> expression)
         {
-            return queryable.Provider.CreateQuery<TResult>(new PgQueryNode(nameof(SelectDistinct), queryable.Node, expression));
+            return queryable.Provider.CreateQuery<TResult>(
+                new PgQueryNode(nameof(SelectDistinct),
+                    queryable.Node,
+                    expression));
         }
 
         public static IPgQueryable<T> SelectDistinct<T>(this IPgQueryable<T> queryable)
@@ -37,7 +40,11 @@ namespace QueryBuilder.Extension
             Expression<Func<T, TResult>> expression,
             Expression<Func<T, TDistinct>> distinctExpression)
         {
-            return queryable.Provider.CreateQuery<TResult>(new PgQueryNode(nameof(SelectDistinctOn), queryable.Node, expression, distinctExpression));
+            return queryable.Provider.CreateQuery<TResult>(
+                new PgQueryNode(nameof(SelectDistinctOn),
+                    queryable.Node,
+                    expression,
+                    distinctExpression));
         }
 
         public static IPgQueryable<T> SelectDistinctOn<T, TDistinct>(
