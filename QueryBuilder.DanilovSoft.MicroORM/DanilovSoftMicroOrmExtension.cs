@@ -10,13 +10,13 @@ namespace QueryBuilder.DanilovSoft.MicroORM
     {
         public static async Task<List<T>> ToList<T>(this IPgQueryable<T> queryable)
         {
-            var queryProvider = (DanilovSoftMicroOrmPgQueryProvider) queryable.Provider;
+            var queryProvider = (DanilovSoftMicroOrmPgQueryBuilder) queryable.Provider;
             return await queryProvider.SqlOrm.Sql(queryable.ToQueryString()).ToAsync().List<T>();
         }
 
         public static async Task<T[]> ToArray<T>(this IPgQueryable<T> queryable)
         {
-            var queryProvider = (DanilovSoftMicroOrmPgQueryProvider) queryable.Provider;
+            var queryProvider = (DanilovSoftMicroOrmPgQueryBuilder) queryable.Provider;
             return await queryProvider.SqlOrm.Sql(queryable.ToQueryString()).ToAsync().Array<T>();
         }
 
