@@ -10,22 +10,25 @@ namespace QueryBuilder.Extension
             this IPgQueryable<T> queryable,
             Expression<Func<T, bool>> expression)
         {
-            return queryable.Provider.CreateQuery<T>(new PgQueryNode(nameof(Where), queryable.Node, expression));
+            var node = new PgQueryNode(nameof(Where), queryable.Node, expression);
+            return queryable.Provider.CreateQuery<T>(node);
         }
 
         public static IPgQueryable<TResult> Select<T, TResult>(
             this IPgQueryable<T> queryable,
             Expression<Func<T, TResult>> expression)
         {
-            return queryable.Provider.CreateQuery<TResult>(new PgQueryNode(nameof(Select), queryable.Node, expression));
+            var node = new PgQueryNode(nameof(Select), queryable.Node, expression);
+            return queryable.Provider.CreateQuery<TResult>(node);
         }
 
         public static IPgQueryable<TResult> SelectDistinct<T, TResult>(
             this IPgQueryable<T> queryable,
             Expression<Func<T, TResult>> expression)
         {
-            return queryable.Provider.CreateQuery<TResult>(new PgQueryNode(nameof(SelectDistinct), queryable.Node, expression));
-        }
+            var node = new PgQueryNode(nameof(SelectDistinct), queryable.Node, expression);
+            return queryable.Provider.CreateQuery<TResult>(node);
+        }        
 
         public static IPgQueryable<T> SelectDistinct<T>(this IPgQueryable<T> queryable)
         {
@@ -37,7 +40,8 @@ namespace QueryBuilder.Extension
             Expression<Func<T, TResult>> expression,
             Expression<Func<T, TDistinct>> distinctExpression)
         {
-            return queryable.Provider.CreateQuery<TResult>(new PgQueryNode(nameof(SelectDistinctOn), queryable.Node, expression, distinctExpression));
+            var node = new PgQueryNode(nameof(SelectDistinctOn), queryable.Node, expression, distinctExpression);
+            return queryable.Provider.CreateQuery<TResult>(node);
         }
 
         public static IPgQueryable<T> SelectDistinctOn<T, TDistinct>(
@@ -49,7 +53,7 @@ namespace QueryBuilder.Extension
 
         public static string ToQueryString<T>(this IPgQueryable<T> queryable)
         {
-            throw new NotImplementedException();
+            return queryable.Provider.Execute(queryable.Node);
         }
     }
 }
