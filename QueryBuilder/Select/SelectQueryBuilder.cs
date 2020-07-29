@@ -21,19 +21,14 @@ namespace QueryBuilder.Select
 
         private static Span<SelectElement> Parse(LambdaExpression expression)
         {
-            switch (expression.Body)
+            return expression.Body switch
             {
-                case NewExpression newExpression:
-                    return ParseNewExpression(newExpression);
-                case ParameterExpression parameterExpression:
-                    return ParseParameterExpression(parameterExpression);
-                case MemberExpression memberExpression:
-                    return ParseMemberExpression(memberExpression);
-                case UnaryExpression unaryExpression:
-                    return ParseUnaryExpression(unaryExpression);
-                default:
-                    throw new NotImplementedException();
-            }
+                NewExpression newExpression => ParseNewExpression(newExpression),
+                ParameterExpression parameterExpression => ParseParameterExpression(parameterExpression),
+                MemberExpression memberExpression => ParseMemberExpression(memberExpression),
+                UnaryExpression unaryExpression => ParseUnaryExpression(unaryExpression),
+                _ => throw new NotImplementedException()
+            };
         }
 
         private static Span<SelectElement> ParseUnaryExpression(UnaryExpression unaryExpression)
@@ -49,7 +44,16 @@ namespace QueryBuilder.Select
 
         private static Span<SelectElement> ParseParameterExpression(ParameterExpression expression)
         {
-            throw new NotImplementedException();
+            var propertyInfos = expression.Type.GetProperties();
+            var length = propertyInfos.Length;
+            var selectElements = new SelectElement[length];
+            for (var i = 0; i < length; i++)
+            {
+                var propertyInfo = propertyInfos[i];
+                selectElements[i] = new SelectElement(propertyInfo.Name, propertyInfo.Name, propertyInfo.PropertyType);
+            }
+
+            return selectElements;
         }
 
         private static Span<SelectElement> ParseNewExpression(NewExpression expression)
