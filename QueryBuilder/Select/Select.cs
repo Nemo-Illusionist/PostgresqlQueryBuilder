@@ -14,6 +14,7 @@ namespace QueryBuilder.Select
         public Select(IReadOnlyCollection<SelectElement> elements, bool isDistinct = false)
         {
             Elements = elements ?? throw new ArgumentNullException(nameof(elements));
+            DistinctElements = null;
             IsDistinct = isDistinct;
         }        
         

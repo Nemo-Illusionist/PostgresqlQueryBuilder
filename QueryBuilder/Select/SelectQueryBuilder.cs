@@ -1,87 +1,67 @@
 using System;
-using System.Linq.Expressions;
-using System.Reflection;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using QueryBuilder.Contract;
+using QueryBuilder.Extension;
 
 namespace QueryBuilder.Select
 {
-    public class SelectQueryBuilder
+    public class SelectQueryBuilder : IPgElementQueryBuilder
     {
-        public Select Parse(LambdaExpression expression, bool isDistinct)
+        private readonly SelectQueryParser _selectQueryParser;
+
+        public SelectQueryBuilder()
         {
-            var selects = Parse(expression);
-            return new Select(Array.AsReadOnly(selects.ToArray()), isDistinct);
+            _selectQueryParser = new SelectQueryParser();
         }
 
-        public Select Parse(LambdaExpression expression, LambdaExpression distinctExpression)
+        public StringBuilder Build()
         {
-            var selects = Parse(expression);
-            var distinctSelects = Parse(distinctExpression);
-            return new Select(Array.AsReadOnly(selects.ToArray()), Array.AsReadOnly(distinctSelects.ToArray()));
+            return new StringBuilder("SELECT * ");
         }
 
-        private static Span<SelectElement> Parse(LambdaExpression expression)
+        public StringBuilder Build(PgQueryNode node)
         {
-            return expression.Body switch
+            var select = node.Method switch
             {
-                NewExpression newExpression => ParseNewExpression(newExpression),
-                ParameterExpression parameterExpression => ParseParameterExpression(parameterExpression),
-                MemberExpression memberExpression => ParseMemberExpression(memberExpression),
-                UnaryExpression unaryExpression => ParseUnaryExpression(unaryExpression),
-                _ => throw new NotImplementedException()
+                nameof(PgQueryableExtension.Select) => _selectQueryParser.Parse(node.Expressions[0], false),
+                nameof(PgQueryableExtension.SelectDistinct) => _selectQueryParser.Parse(node.Expressions[0], true),
+                nameof(PgQueryableExtension.SelectDistinctOn) => _selectQueryParser.Parse(node.Expressions[0],
+                    node.Expressions[1]),
+                _ => throw new Exception()
             };
+
+            return ToSql(select);
         }
 
-        private static Span<SelectElement> ParseUnaryExpression(UnaryExpression unaryExpression)
+        private static StringBuilder ToSql(Select select)
         {
-            return ParseMemberExpression(unaryExpression.Operand as MemberExpression);
-        }
-
-        private static Span<SelectElement> ParseMemberExpression(MemberExpression memberExpression)
-        {
-            var memberName = memberExpression.Member.Name;
-            return new[] {new SelectElement(memberName, memberName, memberExpression.Type)};
-        }
-
-        private static Span<SelectElement> ParseParameterExpression(ParameterExpression expression)
-        {
-            var propertyInfos = expression.Type.GetProperties();
-            var length = propertyInfos.Length;
-            var selectElements = new SelectElement[length];
-            for (var i = 0; i < length; i++)
+            if (select == null) throw new ArgumentNullException(nameof(select));
+            if (select.IsDistinct && select.DistinctElements != null) throw new Exception("select invalid");
+            var query = new StringBuilder("SELECT ");
+            if (select.IsDistinct)
             {
-                var propertyInfo = propertyInfos[i];
-                selectElements[i] = new SelectElement(propertyInfo.Name, propertyInfo.Name, propertyInfo.PropertyType);
+                query.Append("DISTINCT ");
+            }
+            else if (select.DistinctElements != null)
+            {
+                query.Append($"DISTINCT ON ({GenDistinctOn(select.DistinctElements)}) ");
             }
 
-            return selectElements;
+            query.Append(GenSelectFields(select.Elements));
+            query.Append(" ");
+            return query;
         }
 
-        private static Span<SelectElement> ParseNewExpression(NewExpression expression)
+        private static string GenDistinctOn(IEnumerable<SelectElement> elements)
         {
-            var count = expression.Arguments.Count;
-            var selects = new SelectElement[count];
-            for (var i = 0; i < count; i++)
-            {
-                selects[i] = ParseNewExpressionArgument(expression.Arguments[i], expression.Members[i]);
-            }
-
-            return selects;
+            return string.Join(", ", elements.Select(x => $"{x.TableHint}.\"{x.FieldName}\""));
         }
 
-        private static SelectElement ParseNewExpressionArgument(Expression arg, MemberInfo member)
+        private static string GenSelectFields(IEnumerable<SelectElement> elements)
         {
-            switch (arg)
-            {
-                case MemberExpression memberExpression:
-                    return new SelectElement(memberExpression.Member.Name, member.Name, memberExpression.Type);
-                case MethodCallExpression methodCallExpression:
-                    var memExpression = (MemberExpression) methodCallExpression.Arguments[0];
-                    var memberName = memExpression.Member.Name;
-                    return new SelectElement(memberName, member.Name, memExpression.Type)
-                        {Method = methodCallExpression.Method};
-                default:
-                    throw new NotImplementedException();
-            }
+            return string.Join(", ", elements.Select(x => $"{x.TableHint}.\"{x.FieldName}\" AS \"{x.AsName}\""));
         }
     }
 }

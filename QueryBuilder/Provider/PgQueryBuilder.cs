@@ -13,7 +13,7 @@ namespace QueryBuilder.Provider
 
         public IPgQueryable<T> From<T>()
         {
-            return ((IPgQueryProvider) this).CreateQuery<T>(new PgQueryNode(nameof(From)));
+            return ((IPgQueryProvider) this).CreateQuery<T>(new PgQueryNode(nameof(From), typeof(T)));
         }
 
         IPgQueryable<T> IPgQueryProvider.CreateQuery<T>(PgQueryNode node)
