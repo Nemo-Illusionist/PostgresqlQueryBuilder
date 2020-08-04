@@ -10,7 +10,7 @@ namespace QueryBuilder.Extension
             this IPgQueryable<T> queryable,
             Expression<Func<T, bool>> expression)
         {
-            var node = new PgQueryNode(nameof(Where), queryable.Node, expression);
+            var node = new PgQueryNode(nameof(Where), typeof(T), queryable.Node, expression);
             return queryable.Provider.CreateQuery<T>(node);
         }
 
@@ -18,7 +18,7 @@ namespace QueryBuilder.Extension
             this IPgQueryable<T> queryable,
             Expression<Func<T, TResult>> expression)
         {
-            var node = new PgQueryNode(nameof(Select), queryable.Node, expression);
+            var node = new PgQueryNode(nameof(Select), typeof(T), queryable.Node, expression);
             return queryable.Provider.CreateQuery<TResult>(node);
         }
 
@@ -26,9 +26,9 @@ namespace QueryBuilder.Extension
             this IPgQueryable<T> queryable,
             Expression<Func<T, TResult>> expression)
         {
-            var node = new PgQueryNode(nameof(SelectDistinct), queryable.Node, expression);
+            var node = new PgQueryNode(nameof(SelectDistinct), typeof(T), queryable.Node, expression);
             return queryable.Provider.CreateQuery<TResult>(node);
-        }        
+        }
 
         public static IPgQueryable<T> SelectDistinct<T>(this IPgQueryable<T> queryable)
         {
@@ -40,7 +40,8 @@ namespace QueryBuilder.Extension
             Expression<Func<T, TResult>> expression,
             Expression<Func<T, TDistinct>> distinctExpression)
         {
-            var node = new PgQueryNode(nameof(SelectDistinctOn), queryable.Node, expression, distinctExpression);
+            var node = new PgQueryNode(nameof(SelectDistinctOn), typeof(T), queryable.Node, expression,
+                distinctExpression);
             return queryable.Provider.CreateQuery<TResult>(node);
         }
 
