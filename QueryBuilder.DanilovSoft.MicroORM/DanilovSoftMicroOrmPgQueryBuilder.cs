@@ -1,6 +1,5 @@
 using System;
 using DanilovSoft.MicroORM;
-using QueryBuilder.Contract;
 using QueryBuilder.Provider;
 
 namespace QueryBuilder.DanilovSoft.MicroORM
