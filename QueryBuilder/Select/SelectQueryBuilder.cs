@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using QueryBuilder.Contract;
+using QueryBuilder.Exception;
 using QueryBuilder.Extension;
 
 namespace QueryBuilder.Select
@@ -29,7 +30,7 @@ namespace QueryBuilder.Select
                 nameof(PgQueryableExtension.SelectDistinct) => _selectQueryParser.Parse(node.Expressions[0], true),
                 nameof(PgQueryableExtension.SelectDistinctOn) => _selectQueryParser.Parse(node.Expressions[0],
                     node.Expressions[1]),
-                _ => throw new Exception()
+                _ => throw new OutOfSequenceException()
             };
 
             return ToSql(select);
@@ -38,7 +39,7 @@ namespace QueryBuilder.Select
         private static StringBuilder ToSql(Select select)
         {
             if (select == null) throw new ArgumentNullException(nameof(select));
-            if (select.IsDistinct && select.DistinctElements != null) throw new Exception("select invalid");
+            if (select.IsDistinct && select.DistinctElements != null) throw new System.Exception("select invalid");
             var query = new StringBuilder("SELECT ");
             if (select.IsDistinct)
             {

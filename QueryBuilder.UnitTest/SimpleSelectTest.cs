@@ -19,9 +19,13 @@ namespace QueryBuilder.UnitTest
         public void FromSelect()
         {
             var queryString = _queryBuilder.From<Person>().ToQueryString();
-            const string queryResult = @"SELECT * FROM ""Person"" AS _t1";
+            var query1String = _queryBuilder.From<Person>().Select(x => x).ToQueryString();
+            var query2String = _queryBuilder.From<Person>().Select(x => new {x.Id, x.Name}).ToQueryString();
+            const string queryResult = @"SELECT _t1.""Id"" AS ""Id"", _t1.""Name"" AS ""Name"" FROM ""Person"" AS _t1";
 
             Assert.AreEqual(queryResult, queryString);
+            Assert.AreEqual(queryResult, query1String);
+            Assert.AreEqual(queryResult, query2String);
         }
 
         [Test]
@@ -55,15 +59,16 @@ namespace QueryBuilder.UnitTest
             const string queryResult = @"SELECT DISTINCT _t1.""Name"" AS ""name"" FROM ""Person"" AS _t1";
 
             Assert.AreEqual(queryResult, queryString);
-        }        
-        
+        }
+
         [Test]
         public void SelectAllFieldsDistinct()
         {
             var queryString = _queryBuilder.From<Person>()
                 .SelectDistinct()
                 .ToQueryString();
-            const string queryResult = @"SELECT DISTINCT _t1.""Id"" AS ""Id"", _t1.""Name"" AS ""Name"" FROM ""Person"" AS _t1";
+            const string queryResult =
+                @"SELECT DISTINCT _t1.""Id"" AS ""Id"", _t1.""Name"" AS ""Name"" FROM ""Person"" AS _t1";
 
             Assert.AreEqual(queryResult, queryString);
         }

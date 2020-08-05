@@ -1,5 +1,7 @@
 using System;
+using System.Linq.Expressions;
 using System.Text;
+using QueryBuilder.Exception;
 using QueryBuilder.Extension;
 using QueryBuilder.Select;
 
@@ -20,9 +22,16 @@ namespace QueryBuilder.Provider
                 query.Append(selectQueryBuilder.Build(node));
                 node = node.PreviousNode;
             }
+            else if (node.Method == nameof(PgQueryBuilder.From))
+            {
+                var parameter = Expression.Parameter(node.Type, "x");
+                var lambdaExpression = Expression.Lambda(parameter, parameter);
+                var pgQueryNode = new PgQueryNode(nameof(PgQueryableExtension.Select), node.Type, null, lambdaExpression);
+                query.Append(selectQueryBuilder.Build(pgQueryNode));
+            }
             else
             {
-                query.Append(selectQueryBuilder.Build());
+                throw new OutOfSequenceException();
             }
 
             if (node.Method == nameof(PgQueryBuilder.From))
@@ -31,7 +40,7 @@ namespace QueryBuilder.Provider
             }
             else
             {
-                throw new Exception("Out of sequence");
+                throw new OutOfSequenceException();
             }
 
             return query.TrimEnd().ToString();
