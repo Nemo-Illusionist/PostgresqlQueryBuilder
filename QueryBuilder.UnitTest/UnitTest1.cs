@@ -8,12 +8,12 @@ namespace QueryBuilder.UnitTest
 {
     public class Tests
     {
-        private SelectQueryBuilder _selectQueryBuilder;
+        private SelectQueryParser _selectQueryParser;
 
         [SetUp]
         public void Setup()
         {
-            _selectQueryBuilder = new SelectQueryBuilder();
+            _selectQueryParser = new SelectQueryParser();
         }
 
         [Test]
@@ -24,7 +24,7 @@ namespace QueryBuilder.UnitTest
             // _selectQueryBuilder.Parse(expression, false);
             Expression<Func<TestClass, object>> expression = x => new {id = x.Id, x.Name, count = x.SubIds.Count()};
             Expression<Func<TestClass, object>> e1 = x => new {x.Id, x.Name};
-            _selectQueryBuilder.Parse(expression, e1);
+            _selectQueryParser.Parse(expression, e1);
             // Array.Empty<int>().AsQueryable().OrderBy(x=>x).ThenBy(x=>x).Select(x=>x+2)
             Assert.Pass();
         }
