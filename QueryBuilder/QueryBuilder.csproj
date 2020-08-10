@@ -5,7 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Remove="Class1.cs" />
+        <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0" Condition="'$(Configuration)'=='Debug'"/>
     </ItemGroup>
 
 </Project>
