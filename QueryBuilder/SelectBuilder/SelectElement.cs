@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace QueryBuilder.Select
+namespace QueryBuilder.SelectBuilder
 {
     public class SelectElement
     {

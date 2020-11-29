@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace QueryBuilder.Select
+namespace QueryBuilder.SelectBuilder
 {
-    public class Select
+    public class SelectInfo
     {
         public bool IsDistinct { get; }
 
@@ -11,14 +11,14 @@ namespace QueryBuilder.Select
         
         public IReadOnlyCollection<SelectElement> DistinctElements { get; }
 
-        public Select(IReadOnlyCollection<SelectElement> elements, bool isDistinct = false)
+        public SelectInfo(IReadOnlyCollection<SelectElement> elements, bool isDistinct = false)
         {
             Elements = elements ?? throw new ArgumentNullException(nameof(elements));
             DistinctElements = null;
             IsDistinct = isDistinct;
         }        
         
-        public Select(IReadOnlyCollection<SelectElement> elements, IReadOnlyCollection<SelectElement> distinctElements)
+        public SelectInfo(IReadOnlyCollection<SelectElement> elements, IReadOnlyCollection<SelectElement> distinctElements)
         {
             Elements = elements ?? throw new ArgumentNullException(nameof(elements));
             DistinctElements = distinctElements;

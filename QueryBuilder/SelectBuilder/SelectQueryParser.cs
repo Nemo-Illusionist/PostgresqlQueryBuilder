@@ -2,23 +2,38 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace QueryBuilder.Select
+namespace QueryBuilder.SelectBuilder
 {
     public class SelectQueryParser
     {
         private const string TableHint = "_t1";
 
-        public Select Parse(LambdaExpression expression, bool isDistinct)
+        public SelectInfo Parse(LambdaExpression expression, bool isDistinct)
         {
+            if (expression == null)
+            {
+                throw new ArgumentNullException(nameof(expression));
+            }
+
             var selects = Parse(expression);
-            return new Select(Array.AsReadOnly(selects.ToArray()), isDistinct);
+            return new SelectInfo(Array.AsReadOnly(selects.ToArray()), isDistinct);
         }
 
-        public Select Parse(LambdaExpression expression, LambdaExpression distinctExpression)
+        public SelectInfo Parse(LambdaExpression expression, LambdaExpression distinctExpression)
         {
+            if (expression == null)
+            {
+                throw new ArgumentNullException(nameof(expression));
+            }
+
+            if (distinctExpression == null)
+            {
+                throw new ArgumentNullException(nameof(distinctExpression));
+            }
+
             var selects = Parse(expression);
             var distinctSelects = Parse(distinctExpression);
-            return new Select(Array.AsReadOnly(selects.ToArray()), Array.AsReadOnly(distinctSelects.ToArray()));
+            return new SelectInfo(Array.AsReadOnly(selects.ToArray()), Array.AsReadOnly(distinctSelects.ToArray()));
         }
 
         private static Span<SelectElement> Parse(LambdaExpression expression)
@@ -35,7 +50,7 @@ namespace QueryBuilder.Select
 
         private static Span<SelectElement> ParseUnaryExpression(UnaryExpression unaryExpression)
         {
-            return ParseMemberExpression(unaryExpression.Operand as MemberExpression);
+            return ParseMemberExpression((unaryExpression.Operand as MemberExpression)!);
         }
 
         private static Span<SelectElement> ParseMemberExpression(MemberExpression memberExpression)
@@ -75,13 +90,11 @@ namespace QueryBuilder.Select
             switch (arg)
             {
                 case MemberExpression memberExpression:
-                    return new SelectElement(TableHint, memberExpression.Member.Name,
-                        memberExpression.Type, member.Name);
+                    return new SelectElement(TableHint, memberExpression.Member.Name, memberExpression.Type, member.Name);
                 case MethodCallExpression methodCallExpression:
                     var memExpression = (MemberExpression) methodCallExpression.Arguments[0];
                     var memberName = memExpression.Member.Name;
-                    return new SelectElement(TableHint, memberName, memExpression.Type, member.Name,
-                        methodCallExpression.Method);
+                    return new SelectElement(TableHint, memberName, memExpression.Type, member.Name, methodCallExpression.Method);
                 default:
                     throw new NotImplementedException();
             }

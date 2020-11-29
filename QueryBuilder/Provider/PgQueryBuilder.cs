@@ -1,3 +1,4 @@
+using System;
 using QueryBuilder.Contract;
 
 namespace QueryBuilder.Provider
@@ -11,13 +12,19 @@ namespace QueryBuilder.Provider
             _queryGenerator = new PgQueryGenerator();
         }
 
-        public IPgQueryable<T> From<T>()
+        public IPgFromQueryable<T> From<T>()
         {
-            return ((IPgQueryProvider) this).CreateQuery<T>(new PgQueryNode(nameof(From), typeof(T)));
+            var queryable = ((IPgQueryProvider) this).CreateQuery<T>(new PgQueryNode(nameof(From), typeof(T)));
+            return (IPgFromQueryable<T>) queryable;
         }
 
         IPgQueryable<T> IPgQueryProvider.CreateQuery<T>(PgQueryNode node)
         {
+            if (node == null)
+            {
+                throw new ArgumentNullException(nameof(node));
+            }
+
             return new PgQueryable<T>(node, this);
         }
 

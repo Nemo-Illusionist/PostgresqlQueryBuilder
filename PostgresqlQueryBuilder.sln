@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueryBuilder", "QueryBuilde
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueryBuilder.UnitTest", "QueryBuilder.UnitTest\QueryBuilder.UnitTest.csproj", "{237C94DC-B689-4615-BA69-E831C44A9C2C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueryBuilder.CodeGenerator", "QueryBuilder.CodeGenerator\QueryBuilder.CodeGenerator.csproj", "{7077ABC0-8E56-4D07-8498-9158FE7CFFE8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{237C94DC-B689-4615-BA69-E831C44A9C2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{237C94DC-B689-4615-BA69-E831C44A9C2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{237C94DC-B689-4615-BA69-E831C44A9C2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7077ABC0-8E56-4D07-8498-9158FE7CFFE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7077ABC0-8E56-4D07-8498-9158FE7CFFE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7077ABC0-8E56-4D07-8498-9158FE7CFFE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7077ABC0-8E56-4D07-8498-9158FE7CFFE8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

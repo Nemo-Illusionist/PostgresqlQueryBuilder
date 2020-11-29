@@ -3,7 +3,7 @@ using QueryBuilder.Contract;
 
 namespace QueryBuilder
 {
-    public class PgQueryable<T> : IPgQueryable<T>
+    public class PgQueryable<T> : IPgFromQueryable<T>, IPgGroupQueryable<T>
     {
         public PgQueryNode Node { get; }
 

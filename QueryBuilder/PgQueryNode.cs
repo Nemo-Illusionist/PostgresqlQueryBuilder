@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 
 namespace QueryBuilder
@@ -11,7 +12,7 @@ namespace QueryBuilder
 
         public string Method { get; }
 
-        public LambdaExpression[] Expressions { get; }
+        public ReadOnlyCollection<LambdaExpression> Expressions { get; }
 
         public PgQueryNode(
             string method,
@@ -20,11 +21,13 @@ namespace QueryBuilder
             params LambdaExpression[] expressions)
         {
             if (string.IsNullOrEmpty(method))
+            {
                 throw new ArgumentException("Value cannot be null or empty.", nameof(method));
+            }
+
             Method = method;
             Type = type ?? throw new ArgumentNullException(nameof(type));
-
-            Expressions = expressions;
+            Expressions = new ReadOnlyCollection<LambdaExpression>(expressions);
             PreviousNode = previousNode;
         }
     }

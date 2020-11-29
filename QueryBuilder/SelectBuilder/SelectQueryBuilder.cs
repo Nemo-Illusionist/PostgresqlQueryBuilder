@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using QueryBuilder.Contract;
 using QueryBuilder.Exception;
-using QueryBuilder.Extension;
+using QueryBuilder.Extension.Queryable;
 
-namespace QueryBuilder.Select
+namespace QueryBuilder.SelectBuilder
 {
-    public class SelectQueryBuilder : IPgElementQueryBuilder
+    internal class SelectQueryBuilder : IPgElementQueryBuilder
     {
         private readonly SelectQueryParser _selectQueryParser;
 
@@ -24,34 +24,41 @@ namespace QueryBuilder.Select
 
         public StringBuilder Build(PgQueryNode node)
         {
+            if (node == null)
+            {
+                throw new ArgumentNullException(nameof(node));
+            }
+
             var select = node.Method switch
             {
-                nameof(PgQueryableExtension.Select) => _selectQueryParser.Parse(node.Expressions[0], false),
-                nameof(PgQueryableExtension.SelectDistinct) => _selectQueryParser.Parse(node.Expressions[0], true),
-                nameof(PgQueryableExtension.SelectDistinctOn) => _selectQueryParser.Parse(node.Expressions[0],
-                    node.Expressions[1]),
+                nameof(PgQueryableSelectExtension.Select) => _selectQueryParser.Parse(node.Expressions[0], false),
+                nameof(PgQueryableSelectExtension.SelectDistinct) => _selectQueryParser.Parse(node.Expressions[0], true),
+                nameof(PgQueryableSelectExtension.SelectDistinctOn) => _selectQueryParser.Parse(node.Expressions[0], node.Expressions[1]),
                 _ => throw new OutOfSequenceException()
             };
 
             return ToSql(select);
         }
 
-        private static StringBuilder ToSql(Select select)
+        private static StringBuilder ToSql(SelectInfo selectInfo)
         {
-            if (select == null) throw new ArgumentNullException(nameof(select));
-            if (select.IsDistinct && select.DistinctElements != null) throw new System.Exception("select invalid");
+            if (selectInfo.IsDistinct && selectInfo.DistinctElements != null)
+            {
+                throw new System.Exception("select invalid");
+            }
+
             var query = new StringBuilder("SELECT ");
-            if (select.IsDistinct)
+            if (selectInfo.IsDistinct)
             {
                 query.Append("DISTINCT ");
             }
-            else if (select.DistinctElements != null)
+            else if (selectInfo.DistinctElements != null)
             {
-                query.Append($"DISTINCT ON ({GenDistinctOn(select.DistinctElements)}) ");
+                query.Append($"DISTINCT ON ({GenDistinctOn(selectInfo.DistinctElements)}) ");
             }
 
-            query.Append(GenSelectFields(select.Elements));
-            query.Append(" ");
+            query.Append(GenSelectFields(selectInfo.Elements));
+            query.Append(' ');
             return query;
         }
 

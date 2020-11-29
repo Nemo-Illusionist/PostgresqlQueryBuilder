@@ -3,21 +3,27 @@ using System.Linq.Expressions;
 using System.Text;
 using QueryBuilder.Exception;
 using QueryBuilder.Extension;
-using QueryBuilder.Select;
+using QueryBuilder.Extension.Queryable;
+using QueryBuilder.SelectBuilder;
 
 namespace QueryBuilder.Provider
 {
     public class PgQueryGenerator
     {
-        public string Execute(PgQueryNode node)
+        public string Execute(PgQueryNode pgNode)
         {
-            if (node == null) throw new ArgumentNullException(nameof(node));
+            if (pgNode == null)
+            {
+                throw new ArgumentNullException(nameof(pgNode));
+            }
+
             var selectQueryBuilder = new SelectQueryBuilder();
             var query = new StringBuilder();
+            var node = pgNode;
 
-            if (node.Method == nameof(PgQueryableExtension.Select) ||
-                node.Method == nameof(PgQueryableExtension.SelectDistinct) ||
-                node.Method == nameof(PgQueryableExtension.SelectDistinctOn))
+            if (node.Method == nameof(PgQueryableSelectExtension.Select) ||
+                node.Method == nameof(PgQueryableSelectExtension.SelectDistinct) ||
+                node.Method == nameof(PgQueryableSelectExtension.SelectDistinctOn))
             {
                 query.Append(selectQueryBuilder.Build(node));
                 node = node.PreviousNode;
@@ -26,7 +32,8 @@ namespace QueryBuilder.Provider
             {
                 var parameter = Expression.Parameter(node.Type, "x");
                 var lambdaExpression = Expression.Lambda(parameter, parameter);
-                var pgQueryNode = new PgQueryNode(nameof(PgQueryableExtension.Select), node.Type, null, lambdaExpression);
+                var pgQueryNode = new PgQueryNode(nameof(PgQueryableSelectExtension.Select), node.Type, null,
+                    lambdaExpression);
                 query.Append(selectQueryBuilder.Build(pgQueryNode));
             }
             else
@@ -34,7 +41,7 @@ namespace QueryBuilder.Provider
                 throw new OutOfSequenceException();
             }
 
-            if (node.Method == nameof(PgQueryBuilder.From))
+            if (node?.Method == nameof(PgQueryBuilder.From))
             {
                 query.Append($@"FROM ""{node.Type.Name}"" AS _t1 ");
             }
