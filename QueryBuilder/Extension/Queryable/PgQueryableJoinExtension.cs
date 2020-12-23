@@ -5,7 +5,7 @@ using QueryBuilder.Helpers;
 
 namespace QueryBuilder.Extension.Queryable
 {
-    public static class PgQueryableJoinExtension
+    public static partial class PgQueryableJoinExtension
     {
         public static IPgFromQueryable<IPgJoin<T1, TAdd>> CrossJoin<T1, TAdd>(
             this IPgFromQueryable<T1> queryable,

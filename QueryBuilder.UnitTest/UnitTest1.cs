@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using QueryBuilder.Extension.Queryable;
+using QueryBuilder.Provider;
 using QueryBuilder.SelectBuilder;
 
 
@@ -20,7 +22,8 @@ namespace QueryBuilder.UnitTest
         [Test]
         public void Test1()
         {
-            var e = Expression.Lambda(Expression.Constant(10));
+            // var i = default(QueryBuilder.Contract.IPgJoin<int, int, int>);
+            // var e = Expression.Lambda(Expression.Constant(10));
             // new PgQueryBuilder().From<TestClass>()
             // .CrossJoin<TestClass, TestClass1>()
             // .CrossJoin<TestClass, TestClass1, TestClass1>();

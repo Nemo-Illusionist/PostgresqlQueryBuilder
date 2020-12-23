@@ -27,7 +27,7 @@ using System.Linq.Expressions;
 using QueryBuilder.Contract;
 using QueryBuilder.Helpers;
 
-namespace QueryBuilder.Extension
+namespace QueryBuilder.Extension.Queryable
 {{
     public static partial class PgQueryableJoinExtension
     {{
