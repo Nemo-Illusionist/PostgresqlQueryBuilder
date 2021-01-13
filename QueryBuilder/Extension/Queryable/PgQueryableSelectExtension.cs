@@ -1,6 +1,7 @@
 using System;
 using System.Linq.Expressions;
 using QueryBuilder.Contract;
+using QueryBuilder.Entities;
 
 namespace QueryBuilder.Extension.Queryable
 {
@@ -13,7 +14,7 @@ namespace QueryBuilder.Extension.Queryable
             if (queryable == null) throw new ArgumentNullException(nameof(queryable));
             var node = new PgQueryNode(nameof(Select), typeof(T), queryable.Node, expression);
             return queryable.Provider.CreateQuery<TResult>(node);
-        }
+        }        
 
         public static IPgQueryable<T> SelectDistinct<T>(this IPgQueryable<T> queryable)
         {

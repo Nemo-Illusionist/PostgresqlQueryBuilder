@@ -1,9 +1,9 @@
 using System;
 using QueryBuilder.Contract;
 
-namespace QueryBuilder
+namespace QueryBuilder.Entities
 {
-    public class PgQueryable<T> : IPgFromQueryable<T>, IPgGroupQueryable<T>
+    internal class PgQueryable<T> : IPgFromQueryable<T>, IPgGroupQueryable<T>
     {
         public PgQueryNode Node { get; }
 

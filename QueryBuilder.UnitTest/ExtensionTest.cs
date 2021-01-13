@@ -18,7 +18,7 @@ namespace QueryBuilder.UnitTest
         [Test]
         public void NotEqualTest()
         {
-            var q1 = _queryBuilder.From<Person>();
+            var q1 = _queryBuilder.From<User>();
             var q2 = q1.Select(x => x.Id);
             var qs1 = q1.ToQueryString();
             var qs2 = q2.ToQueryString();
@@ -28,7 +28,7 @@ namespace QueryBuilder.UnitTest
         [Test]
         public void EqualTest()
         {
-            var q1 = _queryBuilder.From<Person>();
+            var q1 = _queryBuilder.From<User>();
             var q2 = q1.Select(x => x.Id);
             var qs1 = q1.Select(x => x.Id).ToQueryString();
             var qs2 = q2.ToQueryString();

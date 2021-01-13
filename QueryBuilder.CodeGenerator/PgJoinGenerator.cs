@@ -19,7 +19,7 @@ namespace QueryBuilder.CodeGenerator
             context.AddSource("PgJoinGenerator", SourceText.From(sourceBuilder, Encoding.UTF8));
         }
 
-        public string Gen()
+        private string Gen()
         {
             const string template = @"
     public interface IPgJoin<{0}> : IPgJoin<{1}>

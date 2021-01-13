@@ -1,3 +1,5 @@
+using QueryBuilder.Entities;
+
 namespace QueryBuilder.Contract
 {
     public interface IPgQueryProvider

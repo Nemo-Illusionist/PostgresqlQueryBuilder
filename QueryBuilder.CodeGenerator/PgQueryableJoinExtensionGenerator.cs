@@ -26,6 +26,7 @@ using System;
 using System.Linq.Expressions;
 using QueryBuilder.Contract;
 using QueryBuilder.Helpers;
+using QueryBuilder.Entities;
 
 namespace QueryBuilder.Extension.Queryable
 {{
@@ -51,7 +52,7 @@ namespace QueryBuilder.Extension.Queryable
         public static IPgFromQueryable<IPgJoin<{0}, TAdd>> {1}<{0}, TAdd>(
             this IPgFromQueryable<IPgJoin<{0}>> queryable,
             Expression<Func<{0}, TAdd, bool>> expression,
-            IEmptyGeneric<TAdd> _ = null)
+            EmptyGeneric<TAdd> _ = default)
         {{
             if (queryable == null) throw new ArgumentNullException(nameof(queryable));
             var node = new PgQueryNode(nameof({1}), typeof(IPgJoin<{0}, TAdd>), queryable.Node, expression);
@@ -66,7 +67,7 @@ namespace QueryBuilder.Extension.Queryable
             const string joinTemplate = @"
         public static IPgFromQueryable<IPgJoin<{0}, TAdd>> {1}<{0}, TAdd>(
             this IPgFromQueryable<IPgJoin<{0}>> queryable,
-            IEmptyGeneric<TAdd> _ = null)
+            EmptyGeneric<TAdd> _ = default)
         {{
             if (queryable == null) throw new ArgumentNullException(nameof(queryable));
             var node = new PgQueryNode(nameof({1}), typeof(IPgJoin<{0}, TAdd>), queryable.Node);
@@ -78,7 +79,7 @@ namespace QueryBuilder.Extension.Queryable
 
         private void AddJoinMethod(StringBuilder sourceBuilder, string joinTemplate, string name)
         {
-            var maxT = 15;
+            const int maxT = 15;
             sourceBuilder.Append($"\t\t#region {name}\n");
 
             for (int i = 1; i < maxT; i++)

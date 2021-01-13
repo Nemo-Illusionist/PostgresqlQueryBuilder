@@ -5,11 +5,24 @@ namespace QueryBuilder.Extension
 {
     internal static class StringBuilderExtension
     {
-        public static StringBuilder TrimEnd(this StringBuilder sb)
+        public static void AddSpace(this StringBuilder sb)
         {
-              
-            if (sb == null) throw new ArgumentNullException(nameof(sb));
-            if (sb.Length == 0) return sb;
+            sb.Append(' ');
+        }
+
+        public static void AddInQuotes(this StringBuilder sb, string value)
+        {
+            sb.Append('"');
+            sb.Append(value);
+            sb.Append('"');
+        }
+
+        public static void TrimEnd(this StringBuilder sb)
+        {
+            if (sb == null)
+            {
+                throw new ArgumentNullException(nameof(sb));
+            }
 
             int i = sb.Length - 1;
             for (; i >= 0; i--)
@@ -24,8 +37,6 @@ namespace QueryBuilder.Extension
             {
                 sb.Length = i + 1;
             }
-
-            return sb;
         }
     }
 }

@@ -12,9 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\QueryBuilder.CodeGenerator\QueryBuilder.CodeGenerator.csproj" 
-                          OutputItemType="Analyzer" 
-                          ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\QueryBuilder.CodeGenerator\QueryBuilder.CodeGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
 
 </Project>

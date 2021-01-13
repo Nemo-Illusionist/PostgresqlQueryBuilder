@@ -1,4 +1,5 @@
 using System;
+using QueryBuilder.Entities;
 
 namespace QueryBuilder.Contract
 {
@@ -18,12 +19,5 @@ namespace QueryBuilder.Contract
 
     public interface IPgGroupQueryable<out T> : IPgQueryable<T>
     {
-    }
-
-
-    public interface IPgJoin<out T1, out T2>
-    {
-        T1 From { get; }
-        T2 Join1 { get; }
     }
 }

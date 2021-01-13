@@ -2,9 +2,9 @@ using System;
 
 namespace QueryBuilder.UnitTest.Entities
 {
-    public class Person
+    public class UserData
     {
-        public Guid Id { get; set; }
+        public Guid UserId { get; set; }
         public string Name { get; set; }
     }
 }

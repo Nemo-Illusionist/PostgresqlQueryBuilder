@@ -2,7 +2,8 @@ using System.Runtime.InteropServices;
 
 namespace QueryBuilder.Helpers
 {
-    public interface IEmptyGeneric<T>
+    [StructLayout(LayoutKind.Auto)]
+    public readonly struct EmptyGeneric<T> 
     {
     }
 
@@ -12,14 +13,9 @@ namespace QueryBuilder.Helpers
         {
         }
 
-        [StructLayout(LayoutKind.Auto)]
-        private readonly struct EmptyGeneric<T> : IEmptyGeneric<T>
+        public EmptyGeneric<T> Empty<T>()
         {
-        }
-
-        public IEmptyGeneric<T> Empty<T>()
-        {
-            return new EmptyGeneric<T>();
+            return new();
         }
     }
 }
