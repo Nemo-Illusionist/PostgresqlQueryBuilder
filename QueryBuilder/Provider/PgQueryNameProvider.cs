@@ -44,6 +44,11 @@ namespace QueryBuilder.Provider
 
         public string GetTableName(Expression expression)
         {
+            if (expression == null)
+            {
+                throw new ArgumentNullException(nameof(expression));
+            }
+
             string key;
             if (_aliases.Count > 1)
             {
@@ -58,7 +63,7 @@ namespace QueryBuilder.Provider
                 key = expression switch
                 {
                     ParameterExpression pe => pe.ToString(),
-                    MemberExpression me when me.Expression is ParameterExpression => me.Expression.ToString(), 
+                    MemberExpression me when me.Expression is ParameterExpression => me.Expression.ToString(),
                     _ => throw new ArgumentOutOfRangeException(nameof(expression), expression, null)
                 };
             }
@@ -68,6 +73,11 @@ namespace QueryBuilder.Provider
 
         public string GetTableName(string key)
         {
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
+            }
+
             return _mapDict[key];
         }
     }

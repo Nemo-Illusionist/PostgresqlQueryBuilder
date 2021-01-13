@@ -22,7 +22,7 @@ namespace QueryBuilder.UnitTest
             // var e = Expression.Lambda(Expression.Constant(10));
             var queryString = new PgQueryBuilder().From<User>()
                 .Join((u, ud) => u.Id == ud.UserId && u.Login == ud.Name, PgHelper.Generic.Empty<UserData>())
-                .Join((_, uds, tc) => tc.Name == uds.Name, PgHelper.Generic.Empty<TestClass>())
+                .LeftJoin((_, uds, tc) => tc.Name == uds.Name, PgHelper.Generic.Empty<TestClass>())
                 .Select(x => new {x.From.Id, x.Join1.UserId, testClass = x.Join2.Name})
                 .ToQueryString();
             Console.WriteLine(queryString);
