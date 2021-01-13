@@ -5,12 +5,24 @@ using System.Linq.Expressions;
 using System.Text;
 using QueryBuilder.Entities;
 using QueryBuilder.Extension;
+using QueryBuilder.Extension.Queryable;
 using QueryBuilder.Helpers;
+using QueryBuilder.Provider;
 
 namespace QueryBuilder.Generator
 {
     internal class PgQueryFromAndJoinGenerator
     {
+        private static Dictionary<string, string> _joinNameMapper = new()
+        {
+            {nameof(PgQueryBuilder.From), "FROM"},
+            {nameof(PgQueryableJoinExtension.Join), "JOIN"},
+            {nameof(PgQueryableJoinExtension.CrossJoin), "CROSS JOIN"},
+            {nameof(PgQueryableJoinExtension.FullJoin), "FULL JOIN"},
+            {nameof(PgQueryableJoinExtension.LeftJoin), "LEFT JOIN"},
+            {nameof(PgQueryableJoinExtension.RightJoin), "RIGHT JOIN"},
+        };
+        
         public FromAndJoinGenReturn Execute(IEnumerable<PgQueryNode> nodes)
         {
             var joinQuery = new StringBuilder();
@@ -27,7 +39,7 @@ namespace QueryBuilder.Generator
         {
             var names = GetJoinTableNameAndAlias(node.Type);
             paramsList.Add(names);
-            query.Append(node.Method.ToUpperInvariant());
+            query.Append(_joinNameMapper[node.Method]);
             query.Append(" \"");
             query.Append(names.TableName);
             query.Append("\" AS ");

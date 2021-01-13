@@ -23,9 +23,9 @@ namespace QueryBuilder.UnitTest
             var queryString = new PgQueryBuilder().From<User>()
                 .Join((u, ud) => u.Id == ud.UserId && u.Login == ud.Name, PgHelper.Generic.Empty<UserData>())
                 .Join((_, uds, tc) => tc.Name == uds.Name, PgHelper.Generic.Empty<TestClass>())
-                .Select(x => new {x.From.Id, x.Join1.UserId, testClass = x.Join2})
+                .Select(x => new {x.From.Id, x.Join1.UserId, testClass = x.Join2.Name})
                 .ToQueryString();
-            // Console.WriteLine(queryString);
+            Console.WriteLine(queryString);
                 // .CrossJoin(PgHelper.Generic.Empty<TestClass1>())
                 // .CrossJoin(PgHelper.Generic.Empty<TestClass1>())
                 // .Join((t1, t2, t3, t4) => true, PgHelper.Generic.Empty<TestClass1>())
